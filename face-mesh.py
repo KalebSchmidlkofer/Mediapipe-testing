@@ -1,8 +1,9 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import os
 
-model_path = '/home/kaleb/coding/python/mediapipe/Mediapipe-testing/face_landmarker.task'
+model_path = os.path.join(os.getcwd(), 'face_landmarker.task')
 
 # Initialize MediaPipe Face Landmarker
 mp_face_landmark = mp.solutions.face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1)
