@@ -23,27 +23,23 @@ class gestures:
       print("Error: Could not open camera.")
       exit()
 
-  async def gesturify(self):
-    while self.cap.isOpened():
-      success, image = self.cap.read()
-      if not success:
-        print("Ignoring empty camera frame.")
-        continue
+  async def gesturify(self, frame):
+    success, image = self.cap.read()
+    if not success:
+      print("Ignoring empty camera frame.")
+      return frame
 
-      image = cv2.flip(image, 1)
+    # image = cv2.flip(image, 1)
 
-      rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-      results = self.hands.process(rgb_image)
+    results = self.hands.process(rgb_image)
 
-      if results.multi_hand_landmarks:
-        for hand_landmarks in results.multi_hand_landmarks:
-          mp.solutions.drawing_utils.draw_landmarks(image, hand_landmarks, mp.solutions.hands.HAND_CONNECTIONS)
+    if results.multi_hand_landmarks:
+      for hand_landmarks in results.multi_hand_landmarks:
+        mp.solutions.drawing_utils.draw_landmarks(frame, hand_landmarks, mp.solutions.hands.HAND_CONNECTIONS)
 
-      cv2.imshow('MediaPipe Hands', image)
-
-      if cv2.waitKey(1) & 0xFF == ord('q'):
-        await self.camera_release()
+    return frame
 
   async def camera_release(self):
     self.cap.release()
@@ -52,5 +48,6 @@ class gestures:
 
 
 if __name__ == "__main__":
-  hand=gestures(camera_input_index=0)
-  asyncio.run(hand.gesturify())
+  # hand=gestures(camera_input_index=0)
+  # asyncio.run(hand.gesturify())
+  pass
