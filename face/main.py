@@ -3,53 +3,53 @@ import mediapipe as mp
 import numpy as np
 import os
 from sys import platform
+from typing import Optional
+import asyncio
+
 model_path = os.path.join(os.getcwd(), 'face_landmarker.task')
+#! mpsol=mp.solutions.mediapipe.python.solutions #? MediaPipeSolutions
 
-# Initialize MediaPipe Face Landmarker
-mp_face_landmark = mp.solutions.face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1)
 
-# Initialize OpenCV VideoCapture with camera index 1
 
-# if platform=='win32':
-  # cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
-# else:
-  # cap = cv2.VideoCapture(1)
-cap = cv2.VideoCapture(0)
+
+class face_mesh:
+  def __init__(self, camera_input_index:int, max_num_faces:Optional[int]=1):
+    self.cap = cv2.VideoCapture(camera_input_index)
+    self.mp_face_landmark = mp.solutions.face_mesh.FaceMesh(static_image_mode=False, max_num_faces=max_num_faces)
+
+  async def _cap_check(self):
+    if not self.cap.isOpened():
+      print("Error: Could not open camera.")
+      exit()
+
+  async def meshify(self):
+    await self._cap_check()
+    while True:
+        ret, frame = self.cap.read()
+
+        if not ret:
+            print("Error: Could not capture frame.")
+            break
+
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        results = self.mp_face_landmark.process(rgb_frame)
+
+        if results.multi_face_landmarks:
+            for face_landmarks in results.multi_face_landmarks:
+                for landmark in face_landmarks.landmark:
+                    x, y = int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])
+                    cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
+
+        cv2.imshow('Face Landmarks', frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+          await self.camera_release()
   
-# Check if the camera is opened successfully
-if not cap.isOpened():
-    print("Error: Could not open camera.")
-    exit()
-
-while True:
-    # Read frame from the camera
-    ret, frame = cap.read()
-
-    # Check if frame is captured successfully
-    if not ret:
-        print("Error: Could not capture frame.")
-        break
-
-    # Convert the frame to RGB as MediaPipe works with RGB images
-    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
-    # Process the frame with MediaPipe Face Landmarker
-    results = mp_face_landmark.process(rgb_frame)
-
-    # If face landmarks are detected, draw them on the frame
-    if results.multi_face_landmarks:
-        for face_landmarks in results.multi_face_landmarks:
-            for landmark in face_landmarks.landmark:
-                x, y = int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])
-                cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
-
-    # Display the frame
-    cv2.imshow('Face Landmarks', frame)
-
-    # Check for key press
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-# Release the VideoCapture and close OpenCV windows
-cap.release()
-cv2.destroyAllWindows()
+  async def camera_release(self):
+    self.cap.release()
+    cv2.destroyAllWindows()
+    
+if __name__ == "__main__":
+  mesh=face_mesh(0)
+  asyncio.run(mesh.meshify())
