@@ -9,12 +9,13 @@ import asyncio
 model_path = os.path.join(os.getcwd(), 'face_landmarker.task')
 #! mpsol=mp.solutions.mediapipe.python.solutions #? MediaPipeSolutions
 
-
-
-
 class face_mesh:
-  def __init__(self, camera_input_index:int, max_num_faces:Optional[int]=1):
-    self.cap = cv2.VideoCapture(camera_input_index)
+  def __init__(self, camera_input_index: int, max_num_faces: Optional[int] = 1, cv2camerainput: Optional[cv2.VideoCapture] = None):
+    self.failed_frames=0
+    if cv2camerainput is not None:
+      self.cap = cv2camerainput
+    else:
+      self.cap = cv2.VideoCapture(camera_input_index)
     self.mp_face_landmark = mp.solutions.face_mesh.FaceMesh(static_image_mode=False, max_num_faces=max_num_faces)
 
   async def _cap_check(self):
@@ -29,7 +30,9 @@ class face_mesh:
 
         if not ret:
             print("Error: Could not capture frame.")
-            break
+            self.failed_frames+=1
+            if self.failed_frames>=10:
+              break
 
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
