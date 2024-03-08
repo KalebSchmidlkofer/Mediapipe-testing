@@ -1,7 +1,7 @@
 import face
 import gestures
 import asyncio
-from cv2 import VideoCapture, imshow, waitKey
+from cv2 import VideoCapture, imshow, waitKey, flip
 #? The Plan
 #* The right solution is to merge multiple graphs into one graph and keep everything in one frame processor/calculator graph.
 #* The quick solution is to run two frame processors/calculator graph instances for face and hand tracking separately in one app.
@@ -24,7 +24,9 @@ async def main():
         mesh_frame = await mesh.meshify(frame_copy)
         hand_meshed_frame = await hand.gesturify(mesh_frame)
 
-        imshow('Combined', hand_meshed_frame)
+        image = flip(hand_meshed_frame, 1)
+        imshow('Combined', image)
+        
 
         if waitKey(1) & 0xFF == ord('q'):
             break
