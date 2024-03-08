@@ -10,7 +10,7 @@ class gestures:
   def __init__(self, camera_input_index, max_hands=2, detection_confidance=0.5, tracking_confidance=0.5, cv2camerainput: Optional[cv2.VideoCapture] = None):
     self.options = mp.solutions.hands.Hands(static_image_mode=False, max_num_hands=max_hands, min_detection_confidence=tracking_confidance, min_tracking_confidence=detection_confidance)
     self.hands = mp.solutions.hands.Hands()
-    
+
     if cv2camerainput is not None:
       self.cap = cv2camerainput
     else:
