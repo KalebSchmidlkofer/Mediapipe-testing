@@ -1,3 +1,4 @@
 activate
 .venv
 python
+*/__pycache__

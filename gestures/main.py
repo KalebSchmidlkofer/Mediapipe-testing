@@ -4,16 +4,17 @@ import os
 import asyncio
 import time
 
-mpsol=mp.solutions.mediapipe.python.solutions #? MediaPipeSolutions
+# mpsol=mp.solutions.mediapipe.python.solutions #? MediaPipeSolutions
 # Path to the gesture recognizer model
 model_path = os.path.join(os.getcwd(), 'gesture_recognizer.task')
 
 # Create a GestureRecognizer instance with the live stream mode
-options = mpsol.hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.5, min_tracking_confidence=0.5)
-hands = mpsol.hands.Hands()
-
+options = mp.solutions.hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.5, min_tracking_confidence=0.5)
+hands = mp.solutions.hands.Hands()
+# hands.Hands
 start_time = time.time()
 frame_count = 0
+
 
 class camera():
   async def __init__(self, camera):
@@ -82,5 +83,5 @@ async def face_mesh():
 
 
 if __name__ == "__main__":
-  asyncio.run(gestures())
+  # asyncio.run(gestures())
   asyncio.run(face_mesh())
