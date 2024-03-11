@@ -4,7 +4,7 @@ import os
 import asyncio
 from typing import Optional
 
-model_path = os.path.join(os.getcwd(), 'gesture_recognizer.task')
+model_path = os.path.join(os.getcwd(), '*.task')
 
 class gestures:
   def __init__(self, camera_input_index, max_hands=2, detection_confidance=0.5, tracking_confidance=0.5, cv2camerainput: Optional[cv2.VideoCapture] = None):

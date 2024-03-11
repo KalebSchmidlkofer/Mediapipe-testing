@@ -6,7 +6,7 @@ from sys import platform
 from typing import Optional
 import asyncio
 
-model_path = os.path.join(os.getcwd(), 'face_landmarker.task')
+model_path = os.path.join(os.getcwd(), '*.task')
 #! mpsol=mp.solutions.mediapipe.python.solutions #? MediaPipeSolutions
 
 class face_mesh:
@@ -17,6 +17,7 @@ class face_mesh:
     else:
       self.cap = cv2.VideoCapture(camera_input_index)
     self.mp_face_landmark = mp.solutions.face_mesh.FaceMesh(static_image_mode=False, max_num_faces=max_num_faces)
+    mp.solutions.pose.Pose()
 
   async def _cap_check(self):
     if not self.cap.isOpened():
