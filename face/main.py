@@ -34,6 +34,7 @@ class face_mesh:
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     results = self.mp_face_landmark.process(rgb_frame)
+    results = await asyncio.get_event_loop().run_in_executor(None, self.mp_face_landmark.process, rgb_frame)
 
     if results.multi_face_landmarks:
       for face_landmarks in results.multi_face_landmarks:

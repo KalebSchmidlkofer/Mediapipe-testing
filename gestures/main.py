@@ -16,8 +16,6 @@ class gestures:
     else:
       self.cap = cv2.VideoCapture(camera_input_index)
 
-
-
   async def _cap_check(self):
     if not self.cap.isOpened():
       print("Error: Could not open camera.")
@@ -31,9 +29,10 @@ class gestures:
 
     # image = cv2.flip(image, 1)
 
-    rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    rgb_frame = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    results = self.hands.process(rgb_image)
+    # results = self.hands.process(rgb_image)
+    results = await asyncio.get_event_loop().run_in_executor(None, self.hands.process, rgb_frame)
 
     if results.multi_hand_landmarks:
       for hand_landmarks in results.multi_hand_landmarks:
