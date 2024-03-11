@@ -42,7 +42,7 @@ class face_mesh:
           x, y = int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])
           cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
 
-    return frame
+    cv2.imshow('Face_mesh', frame)
   
   async def camera_release(self):
     self.cap.release()

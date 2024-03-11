@@ -23,11 +23,19 @@ async def main():
 
         frame_copy = frame.copy()
 
-        mesh_frame = await mesh.meshify(frame_copy)
-        pose_frame = await pose.fetch_pose(mesh_frame)
-        hand_frame = await hand.gesturify(pose_frame)
-        image = flip(hand_frame, 1)
-        imshow('Combined', image)
+
+        # cmesh=await mesh.meshify(frame_copy),
+        # cpose=await pose.fetch_pose(frame_copy),
+        # chands=await hand.gesturify(frame_copy)
+        # cmesh_task = mesh.meshify(frame_copy)
+        # cpose_task = pose.fetch_pose(frame_copy)
+        # chands_task = hand.gesturify(frame_copy)
+
+        cmesh, cpose, chands = await asyncio.gather(mesh.meshify(frame_copy), hand.gesturify(frame_copy), pose.fetch_pose(frame_copy))
+
+        # mesh_frame = await mesh.meshify(frame_copy)
+        # pose_frame = await pose.fetch_pose(frame_copy)
+        # hand_frame = await hand.gesturify(frame_copy)
         
 
         if waitKey(1) & 0xFF == ord('q'):
