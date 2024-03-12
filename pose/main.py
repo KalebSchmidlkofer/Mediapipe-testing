@@ -37,7 +37,7 @@ class PoseEstimator:
         mp.solutions.drawing_utils.draw_landmarks(
           frame, results.pose_landmarks, mp.solutions.pose.POSE_CONNECTIONS)
     
-      cv2.imshow('Pose', frame)
+      cv2.imshow('Pose', cv2.flip(frame, 1))
 
 
   async def camera_release(self):

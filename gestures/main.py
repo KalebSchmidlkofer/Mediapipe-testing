@@ -10,11 +10,7 @@ class gestures:
   def __init__(self, camera_input_index, max_hands=2, detection_confidance=0.5, tracking_confidance=0.5, cv2camerainput: Optional[cv2.VideoCapture] = None):
     self.options = mp.solutions.hands.Hands(static_image_mode=False, max_num_hands=max_hands, min_detection_confidence=tracking_confidance, min_tracking_confidence=detection_confidance)
     self.hands = mp.solutions.hands.Hands()
-
-    if cv2camerainput is not None:
-      self.cap = cv2camerainput
-    else:
-      self.cap = cv2.VideoCapture(camera_input_index)
+    self.cap = cv2camerainput
 
   async def _cap_check(self):
     if not self.cap.isOpened():
@@ -37,7 +33,7 @@ class gestures:
     if results.multi_hand_landmarks:
       for hand_landmarks in results.multi_hand_landmarks:
         mp.solutions.drawing_utils.draw_landmarks(frame, hand_landmarks, mp.solutions.hands.HAND_CONNECTIONS)
-    cv2.imshow('Hands', frame)
+    cv2.imshow('Hands', cv2.flip(frame, 1))
 
   async def camera_release(self):
     self.cap.release()
@@ -46,6 +42,8 @@ class gestures:
 
 
 if __name__ == "__main__":
-  # hand=gestures(camera_input_index=0)
-  # asyncio.run(hand.gesturify())
-  pass
+  camera=cv2.VideoCapture(0)
+  while True:
+    ret, frame = camera.read()
+    hand=gestures(camera_input_index=0, cv2camerainput=camera)
+    asyncio.run(hand.gesturify(frame))
